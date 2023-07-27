@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Invoice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .invoice-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .invoice-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .invoice-details > div {
+      margin-bottom: 10px;
+    }
+
+    .customer-info {
+      display: flex;
+      flex-direction: column;
+      margin-right: 30px;
+    }
+
+    .billing-address {
+      display: flex;
+      flex-direction: column;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #total {
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: right;
+    }
+
+    .details-box {
+      border: 1px solid #ddd;
+      padding: 10px;
+      width: 180px;
+      text-align: right;
+    }
+
+    #buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <h1>New Invoice</h1>
+  <div class="invoice-info">
+    <div class="invoice-details">
+      <div>Invoice No: <span id="invoiceNo"></span></div>
+      <div>Order No: <span id="orderNo"></span></div>
+      <div>Date of Bill: <span id="dateOfBill"></span></div>
+    </div>
+    <div class="customer-info">
+      <strong>Customer Details:</strong>
+      <p>Name: John Doe</p>
+      <p>Email: john@example.com</p>
+    </div>
+    <div class="billing-address">
+      <strong>Billing Address:</strong>
+      <p>Address: 123 Main St</p>
+      <p>City: City</p>
+      <p>Country: Country</p>
+    </div>
+  </div>
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>Product ID</th>
+        <th>Product Name</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Discount</th>
+        <th>Tax</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table rows will be populated dynamically using JavaScript -->
+    </tbody>
+  </table>
+  <div id="total">
+    <table>
+      <tr>
+        <td><strong>Quantity:</strong></td>
+        <td class="details-box" id="quantityTotal"></td>
+      </tr>
+      <tr>
+        <td><strong>Discount:</strong></td>
+        <td class="details-box" id="discountTotal"></td>
+      </tr>
+      <tr>
+        <td><strong>Tax:</strong></td>
+        <td class="details-box" id="taxTotal"></td>
+      </tr>
+      <tr>
+        <td><strong>Total:</strong></td>
+        <td class="details-box" id="grandTotal"></td>
+      </tr>
+    </table>
+  </div>
+  <div id="buttons">
+    <button onclick="saveInvoice()">Save</button>
+    <button onclick="goToIndex()">Cancel</button>
+  </div>
+
+  <script>
+    // Sample invoice data (you can replace this with actual data from your backend)
+    const invoiceDetails = {
+      invoiceNo: "INV001",
+      orderNo: "ORD001",
+      dateOfBill: "2023-07-28",
+      customerDetails: "Customer Name: John Doe\nEmail: john@example.com",
+      billingAddress: "Address: 123 Main St, City, Country",
+      products: [
+        { productId: "P001", productName: "Product 1", unitPrice: "$10.00", quantity: 2, discount: "$2.00", tax: "$1.00" },
+        { productId: "P002", productName: "Product 2", unitPrice: "$15.00", quantity: 3, discount: "$3.00", tax: "$1.50" },
+        // Add more product data as needed
+      ],
+      discountTotal: "$5.00",
+      taxTotal: "$2.50",
+      grandTotal: "$25.50",
+    };
+
+    const invoiceNoElement = document.getElementById("invoiceNo");
+    const orderNoElement = document.getElementById("orderNo");
+    const dateOfBillElement = document.getElementById("dateOfBill");
+    const customerInfoElement = document.querySelector(".customer-info");
+    const billingAddressElement = document.querySelector(".billing-address");
+    const productTableBody = document.querySelector("#productTable tbody");
+    const quantityTotalElement = document.getElementById("quantityTotal");
+    const discountTotalElement = document.getElementById("discountTotal");
+    const taxTotalElement = document.getElementById("taxTotal");
+    const grandTotalElement = document.getElementById("grandTotal");
+
+    // Function to populate invoice details
+    function populateInvoiceDetails() {
+      invoiceNoElement.textContent = invoiceDetails.invoiceNo;
+      orderNoElement.textContent = invoiceDetails.orderNo;
+      dateOfBillElement.textContent = invoiceDetails.dateOfBill;
+      customerInfoElement.innerHTML = `<strong>Customer Details:</strong><p>${invoiceDetails.customerDetails}</p>`;
+      billingAddressElement.innerHTML = `<strong>Billing Address:</strong><p>${invoiceDetails.billingAddress}</p>`;
+    }
+
+    // Function to populate the product table
+    function populateProductTable() {
+      invoiceDetails.products.forEach(product => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${product.productId}</td>
+          <td>${product.productName}</td>
+          <td>${product.unitPrice}</td>
+          <td>${product.quantity}</td>
+          <td>${product.discount}</td>
+          <td>${product.tax}</td>
+        `;
+        productTableBody.appendChild(row);
+      });
+    }
+
+    // Function to display invoice total
+    function displayInvoiceTotal() {
+      quantityTotalElement.textContent = calculateQuantityTotal();
+      discountTotalElement.textContent = invoiceDetails.discountTotal;
+      taxTotalElement.textContent = invoiceDetails.taxTotal;
+      grandTotalElement.textContent = invoiceDetails.grandTotal;
+    }
+
+    // Function to calculate the total quantity of products
+    function calculateQuantityTotal() {
+      let quantityTotal = 0;
+      invoiceDetails.products.forEach(product => {
+        quantityTotal += product.quantity;
+      });
+      return quantityTotal;
+    }
+
+    // Function to navigate to index.html (Home)
+    function goToIndex() {
+      window.location.href = "index.html";
+    }
+
+    // Function to show "Invoice Saved Successfully" pop-up and navigate to index.html (Home)
+    function saveInvoice() {
+      alert("Invoice Saved Successfully!");
+      goToIndex();
+    }
+
+    // Populate invoice details, product table, and invoice total when the page loads
+    populateInvoiceDetails();
+    populateProductTable();
+    displayInvoiceTotal();
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GENERATED INVOICE</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <h1>GENERATED INVOICE</h1>
+  <label for="orderId">Select Order ID:</label>
+  <select id="orderId">
+    <!-- Order IDs will be populated dynamically using JavaScript -->
+  </select>
+  <ul>
+    <!-- Invoice numbers will be populated dynamically using JavaScript -->
+  </ul>
+
+  <script>
+    // Sample order data (you can replace this with actual data from your backend)
+    const orders = [
+      { orderId: "1001" },
+      { orderId: "1002" },
+      { orderId: "1003" },
+      // Add more order data as needed
+    ];
+
+    // Sample invoice data (you can replace this with actual data from your backend)
+    const invoices = [
+      { orderId: "1001", invoiceNo: "INV001" },
+      { orderId: "1002", invoiceNo: "INV002" },
+      { orderId: "1003", invoiceNo: "INV003" },
+      // Add more invoice data as needed
+    ];
+
+    const orderIdDropdown = document.getElementById("orderId");
+    const invoiceList = document.querySelector("ul");
+
+    // Function to populate the dropdown list with order IDs
+    function populateDropdown() {
+      orders.forEach(order => {
+        const option = document.createElement("option");
+        option.value = order.orderId;
+        option.textContent = order.orderId;
+        orderIdDropdown.appendChild(option);
+      });
+    }
+
+    // Function to populate the list with invoice numbers based on selected order ID
+    function populateList(orderId) {
+      invoiceList.innerHTML = ""; // Clear the existing list
+      const filteredInvoices = invoices.filter(invoice => invoice.orderId === orderId);
+      filteredInvoices.forEach(invoice => {
+        const listItem = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `new.html?invoiceNo=${invoice.invoiceNo}`;
+        link.textContent = invoice.invoiceNo;
+        listItem.appendChild(link);
+        invoiceList.appendChild(listItem);
+      });
+    }
+
+    // Event listener for dropdown change
+    orderIdDropdown.addEventListener("change", function() {
+      const selectedOrderId = this.value;
+      populateList(selectedOrderId);
+    });
+
+    // Populate the dropdown and list when the page loads
+    populateDropdown();
+    populateList(orders[0].orderId); // Populate with the first order ID
+  </script>
+</body>
+</html>

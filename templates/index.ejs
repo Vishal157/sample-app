@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Invoice Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      button {
+        padding: 6px 12px;
+      }
+
+      #detailsContainer {
+        display: none;
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+
+      #generateInvoiceBtn {
+        float: right;
+        padding: 10px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Invoice Dashboard</h1>
+    <a href="model.html">
+      <button id="generateInvoiceBtn">Generate Invoice</button>
+    </a>
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th>Invoice No</th>
+          <th>Order ID</th>
+          <th>Customer ID</th>
+          <th>Invoice Total</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Table rows will be populated dynamically using JavaScript -->
+      </tbody>
+    </table>
+    <div id="detailsContainer">
+      <!-- Details will be shown here when the button is clicked -->
+    </div>
+
+    <script>
+      // Sample invoice data (you can replace this with actual data from your backend)
+      const invoices = [
+        {
+          invoiceNo: "1",
+          orderId: "1001",
+          customerId: "C001",
+          invoiceTotal: "$120.50",
+          details: "Details for Invoice 1",
+        },
+        {
+          invoiceNo: "2",
+          orderId: "1002",
+          customerId: "C002",
+          invoiceTotal: "$75.20",
+          details: "Details for Invoice 2",
+        },
+        {
+          invoiceNo: "3",
+          orderId: "1003",
+          customerId: "C003",
+          invoiceTotal: "$210.00",
+          details: "Details for Invoice 3",
+        },
+        // Add more invoice data as needed
+      ];
+
+      const invoiceTableBody = document.querySelector("#invoiceTable tbody");
+      const generateInvoiceBtn = document.getElementById("generateInvoiceBtn");
+      const detailsContainer = document.getElementById("detailsContainer");
+
+      // Function to populate the table with invoice data
+      function populateTable() {
+        invoices.forEach((invoice) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${invoice.invoiceNo}</td>
+          <td>${invoice.orderId}</td>
+          <td>${invoice.customerId}</td>
+          <td>${invoice.invoiceTotal}</td>
+          <td><button class="viewBtn">View</button></td>
+        `;
+          invoiceTableBody.appendChild(row);
+        });
+      }
+
+      // Function to display invoice details when the button is clicked
+      function showDetails(event) {
+        const target = event.target;
+        if (target.classList.contains("viewBtn")) {
+          const invoiceNo =
+            target.parentElement.parentElement.cells[0].innerText;
+          // Redirect to invoice.html with the selected invoiceNo as a query parameter
+          window.location.href = `invoice.html?invoiceNo=${invoiceNo}`;
+        }
+      }
+
+      // Attach event listener to the table to handle the View button clicks
+      invoiceTableBody.addEventListener("click", showDetails);
+
+      // Populate the table with data when the page loads
+      populateTable();
+    </script>
+  </body>
+</html>
